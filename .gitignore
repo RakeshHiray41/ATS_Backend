@@ -1,0 +1,36 @@
+# Virtual Environment
+env/
+venv/
+.venv/
+
+# Environment Variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Logs
+*.log
+
+# Pytest
+.pytest_cache/
+
+# Mypy
+.mypy_cache/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# OS Files
+.DS_Store
+Thumbs.db
