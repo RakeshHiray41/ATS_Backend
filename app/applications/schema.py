@@ -28,5 +28,14 @@ class ApplicationWithJobSchema(ApplicationResponseSchema):
     job_title: str
 
 
+# Used specifically for the recruiter's "All Candidates" list (across every
+# vacancy they own), where job title, candidate contact number and photo
+# are needed alongside application data.
+class ApplicationWithCandidateAndJobSchema(ApplicationWithCandidateSchema):
+    job_title: str
+    candidate_phone: str | None = None
+    candidate_photo_url: str | None = None
+
+
 class UpdateApplicationStatusSchema(BaseModel):
     status: str

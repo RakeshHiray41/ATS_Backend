@@ -8,10 +8,17 @@ from app.users.model import User
 from app.candidate_profiles.schema import (
     CandidateProfileCreateSchema,
     CandidateProfileResponseSchema,
-    CandidateProfileUpdateSchema
+    CandidateProfileUpdateSchema,
+    CandidateProfileWithUserSchema
 )
 
-from app.candidate_profiles.service import create_profile, get_my_profile , update_profile,delete_profile
+from app.candidate_profiles.service import (
+    create_profile,
+    get_my_profile,
+    update_profile,
+    delete_profile,
+    get_candidate_profile_for_recruiter,
+)
 from app.candidate_profiles.model import CandidateProfile
 
 
@@ -61,6 +68,24 @@ def me(
         current_user
     )
 
+
+
+@router.get(
+    "/candidate/{user_id}",
+    response_model=CandidateProfileWithUserSchema
+)
+def get_candidate_profile(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        get_current_user
+    )
+):
+    return get_candidate_profile_for_recruiter(
+        user_id,
+        db,
+        current_user
+    )
 
 
 @router.post("/upload-resume")

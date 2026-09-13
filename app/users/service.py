@@ -32,7 +32,7 @@ def register_user(
         full_name=body.full_name,
         email=body.email,
         password=hash_password(body.password),
-        role="candidate"
+        role=body.role
     )
 
     db.add(new_user)

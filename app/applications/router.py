@@ -8,6 +8,7 @@ from app.users.model import User
 from app.applications.schema import (
     ApplicationResponseSchema,
     ApplicationWithCandidateSchema,
+    ApplicationWithCandidateAndJobSchema,
     ApplicationWithJobSchema,
     UpdateApplicationStatusSchema
 )
@@ -16,7 +17,8 @@ from app.applications.service import (
     apply_job,
     get_job_applications,
     update_application_status,
-    get_my_applications
+    get_my_applications,
+    get_all_applications_for_recruiter
 )
 
 
@@ -57,6 +59,22 @@ def get_applications(
 ):
     return get_job_applications(
         job_id,
+        db,
+        current_user
+    )
+
+
+@router.get(
+    "/recruiter/all",
+    response_model=list[ApplicationWithCandidateAndJobSchema]
+)
+def get_recruiter_all_applications(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        get_current_user
+    )
+):
+    return get_all_applications_for_recruiter(
         db,
         current_user
     )

@@ -58,6 +58,34 @@ class CandidateProfileResponseSchema(BaseModel):
     }
 
 
+
+# Used when a recruiter views a candidate's full profile from the
+# Applicants list — includes the candidate's name/email from the User
+# table alongside their profile fields.
+class CandidateProfileWithUserSchema(BaseModel):
+    id: int
+    user_id: int
+    full_name: str
+    email: str
+    phone: str | None
+    bio: str | None
+    skills: Optional[List[str]] = None
+    experience: str | None
+    linkedin_url: str | None
+    github_url: str | None
+    resume_url: str | None
+    photo_url: str | None
+
+    @field_validator("skills", mode="before")
+    @classmethod
+    def validate_skills(cls, value):
+        return _parse_skills(value)
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
 class CandidateProfileUpdateSchema(BaseModel):
     phone: str | None = None
     bio: str | None = None

@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -5,6 +7,7 @@ class UserRegisterSchema(BaseModel):
     full_name: str
     email: EmailStr
     password: str
+    role: Literal["candidate", "recruiter"]
 
 class UserResponseSchema(BaseModel):
     id: int

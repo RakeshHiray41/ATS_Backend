@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.candidate_profiles.model import CandidateProfile
+from app.users.model import User
 
 
 def _skills_to_db(skills):
@@ -71,6 +72,48 @@ def get_my_profile(
         )
 
     return profile
+
+
+def get_candidate_profile_for_recruiter(
+    user_id: int,
+    db: Session,
+    current_user
+):
+    if current_user.role != "recruiter":
+        raise HTTPException(
+            status_code=403,
+            detail="Recruiter only"
+        )
+
+    row = (
+        db.query(CandidateProfile, User)
+        .join(User, CandidateProfile.user_id == User.id)
+        .filter(CandidateProfile.user_id == user_id)
+        .first()
+    )
+
+    if not row:
+        raise HTTPException(
+            status_code=404,
+            detail="Candidate profile not found"
+        )
+
+    profile, user = row
+
+    return {
+        "id": profile.id,
+        "user_id": profile.user_id,
+        "full_name": user.full_name,
+        "email": user.email,
+        "phone": profile.phone,
+        "bio": profile.bio,
+        "skills": profile.skills,
+        "experience": profile.experience,
+        "linkedin_url": profile.linkedin_url,
+        "github_url": profile.github_url,
+        "resume_url": profile.resume_url,
+        "photo_url": profile.photo_url,
+    }
 
 
 def update_profile(

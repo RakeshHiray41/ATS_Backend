@@ -56,7 +56,26 @@ def create_job(
     return job
 
 
-def get_all_jobs(db: Session):
+def get_all_jobs(
+    db: Session,
+    current_user
+):
+    if current_user.role == "recruiter":
+        company = (
+            db.query(Company)
+            .filter(Company.owner_id == current_user.id)
+            .first()
+        )
+
+        if not company:
+            return []
+
+        return (
+            db.query(Job)
+            .filter(Job.company_id == company.id)
+            .all()
+        )
+
     return db.query(Job).all()
 
 

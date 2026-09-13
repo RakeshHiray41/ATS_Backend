@@ -11,6 +11,7 @@ from app.companies.service import (
     delete_company,
     update_company,
     get_my_company,
+    get_company_by_id,
 )
 from app.companies.model import Company
 from app.core.supabase import supabase
@@ -49,6 +50,19 @@ def me(
     current_user: User = Depends(get_current_user)
 ):
     return get_my_company(db, current_user)
+
+
+# Public — lets a candidate view a company's profile from a job listing.
+# No auth required, same as the public job browsing endpoints.
+@router.get(
+    "/{company_id}",
+    response_model=CompanyResponseSchema
+)
+def get_company(
+    company_id: int,
+    db: Session = Depends(get_db)
+):
+    return get_company_by_id(company_id, db)
 
 
 @router.patch(

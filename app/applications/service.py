@@ -5,6 +5,7 @@ from app.jobs.model import Job
 from app.users.model import User
 from app.applications.model import Application
 from app.candidate_profiles.model import CandidateProfile
+from app.companies.model import Company
 
 
 def apply_job(
@@ -173,6 +174,53 @@ def get_my_applications(
             "candidate_id": application.candidate_id,
             "resume_url": application.resume_url,
             "job_title": job.title,
+        })
+
+    return result
+
+
+def get_all_applications_for_recruiter(
+    db: Session,
+    current_user
+):
+    """All applicants across every vacancy owned by this recruiter —
+    used by the "All Candidates" list, joined with Job (title),
+    User (candidate name/email) and CandidateProfile (phone/photo)."""
+
+    if current_user.role != "recruiter":
+        raise HTTPException(
+            status_code=403,
+            detail="Recruiter only"
+        )
+
+    rows = (
+        db.query(Application, Job, User, CandidateProfile)
+        .join(Job, Application.job_id == Job.id)
+        .join(Company, Job.company_id == Company.id)
+        .join(User, Application.candidate_id == User.id)
+        .outerjoin(
+            CandidateProfile,
+            CandidateProfile.user_id == Application.candidate_id
+        )
+        .filter(Company.owner_id == current_user.id)
+        .order_by(Application.applied_at.desc())
+        .all()
+    )
+
+    result = []
+    for application, job, user, profile in rows:
+        result.append({
+            "id": application.id,
+            "status": application.status,
+            "applied_at": application.applied_at,
+            "job_id": application.job_id,
+            "job_title": job.title,
+            "candidate_id": application.candidate_id,
+            "candidate_name": user.full_name,
+            "candidate_email": user.email,
+            "candidate_phone": profile.phone if profile else None,
+            "candidate_photo_url": profile.photo_url if profile else None,
+            "resume_url": application.resume_url,
         })
 
     return result

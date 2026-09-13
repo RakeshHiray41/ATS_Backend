@@ -45,14 +45,12 @@ def create(
     )
 
 
-@router.get(
-    "/",
-    response_model=list[JobResponseSchema]
-)
+@router.get("/")
 def get_jobs(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
-    return get_all_jobs(db)
+    return get_all_jobs(db, current_user)
 
 
 @router.get("/search")
