@@ -174,6 +174,7 @@ def get_my_applications(
             "candidate_id": application.candidate_id,
             "resume_url": application.resume_url,
             "job_title": job.title,
+            "job_location": job.location,
         })
 
     return result

@@ -26,6 +26,7 @@ class ApplicationWithCandidateSchema(ApplicationResponseSchema):
 # where the job title is needed alongside application data.
 class ApplicationWithJobSchema(ApplicationResponseSchema):
     job_title: str
+    job_location: str | None = None
 
 
 # Used specifically for the recruiter's "All Candidates" list (across every
