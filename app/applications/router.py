@@ -18,7 +18,8 @@ from app.applications.service import (
     get_job_applications,
     update_application_status,
     get_my_applications,
-    get_all_applications_for_recruiter
+    get_all_applications_for_recruiter,
+    delete_application
 )
 
 
@@ -113,6 +114,21 @@ def my_applications(
     )
 ):
     return get_my_applications(
+        db,
+        current_user
+    )
+
+
+@router.delete("/{application_id}")
+def withdraw_application(
+    application_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        get_current_user
+    )
+):
+    return delete_application(
+        application_id,
         db,
         current_user
     )

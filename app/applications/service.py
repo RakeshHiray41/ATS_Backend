@@ -6,6 +6,44 @@ from app.users.model import User
 from app.applications.model import Application
 from app.candidate_profiles.model import CandidateProfile
 from app.companies.model import Company
+from app.interviews.model import Interview
+
+
+def delete_application(
+    application_id: int,
+    db: Session,
+    current_user: User
+):
+    """Lets a candidate withdraw their own application."""
+
+    application = (
+        db.query(Application)
+        .filter(Application.id == application_id)
+        .first()
+    )
+
+    if not application:
+        raise HTTPException(
+            status_code=404,
+            detail="Application not found"
+        )
+
+    if application.candidate_id != current_user.id:
+        raise HTTPException(
+            status_code=403,
+            detail="You can only withdraw your own applications"
+        )
+
+    # Remove any interviews tied to this application first — otherwise the
+    # foreign key on interviews.application_id blocks the delete.
+    db.query(Interview).filter(
+        Interview.application_id == application_id
+    ).delete()
+
+    db.delete(application)
+    db.commit()
+
+    return {"detail": "Application withdrawn"}
 
 
 def apply_job(
