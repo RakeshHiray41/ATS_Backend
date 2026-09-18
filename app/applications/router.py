@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends
 from sqlalchemy.orm import Session
 
 from app.database.database import get_db
@@ -88,6 +88,7 @@ def get_recruiter_all_applications(
 def update_status(
     application_id: int,
     body: UpdateApplicationStatusSchema,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: User = Depends(
         get_current_user
@@ -97,7 +98,8 @@ def update_status(
         application_id,
         body,
         db,
-        current_user
+        current_user,
+        background_tasks
     )
 
 

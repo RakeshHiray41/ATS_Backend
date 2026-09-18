@@ -26,6 +26,7 @@ The backend provides secure REST APIs for authentication, candidate management, 
 - Upload Resume
 - Upload Profile Image
 - Apply for Jobs
+- **Withdraw an application**
 - View Applied Jobs
 - View Interviews
 - Candidate Dashboard
@@ -41,8 +42,27 @@ The backend provides secure REST APIs for authentication, candidate management, 
 - Update Jobs
 - Delete Jobs
 - View Applicants
+- **View a candidate's full profile** (`GET /profile/candidate/{user_id}`)
+- **View all applicants across every owned vacancy in one call** (`GET /applications/recruiter/all`)
 - Schedule Interviews
 - Recruiter Dashboard
+
+---
+
+## 🏭 Company Module
+
+- **Public company profile lookup** (`GET /companies/{company_id}`) — lets a candidate view a recruiter's company from a job listing, no auth required
+
+---
+
+## 🔔 Notifications Module
+
+- In-app notifications, created automatically when a recruiter updates an application's status
+- `GET /notifications/my` — a candidate's notifications, newest first
+- `GET /notifications/unread-count`
+- `PATCH /notifications/{id}/read`
+- `PATCH /notifications/read-all`
+- Also sends an email to the candidate on status change (via the existing Email module, `fastapi-mail`), sent as a background task so the status-update request isn't slowed down
 
 ---
 
@@ -319,7 +339,20 @@ Authorization: Bearer <access_token>
 - Profile Image Upload
 - Company Logo Upload
 - Interviews
+- Notifications
 - Dashboard
+
+---
+
+# 🗃️ Running Migrations
+
+After pulling new backend changes, always run:
+
+```bash
+alembic upgrade head
+```
+
+This applies any new tables (e.g. the `notifications` table) to your database.
 
 ---
 

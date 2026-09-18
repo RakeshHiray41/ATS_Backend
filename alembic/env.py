@@ -11,6 +11,7 @@ from app.jobs.model import Job
 from app.candidate_profiles.model import CandidateProfile
 from app.applications.model import Application
 from app.interviews.model import Interview
+from app.notifications.model import Notification
 
 
 

@@ -8,6 +8,7 @@ from app.candidate_profiles.router import router as profile_router
 from app.applications.router import router as application_router
 from app.interviews.router import router as interview_router
 from app.dashboard.router import router as dashboard_router
+from app.notifications.router import router as notification_router
 
 
 
@@ -29,6 +30,8 @@ app.include_router(application_router)
 app.include_router(interview_router)
 
 app.include_router(dashboard_router)
+
+app.include_router(notification_router)
 
 
 origins = [
